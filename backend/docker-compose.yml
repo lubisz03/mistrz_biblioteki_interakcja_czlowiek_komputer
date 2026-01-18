@@ -1,0 +1,82 @@
+# docker-compose.yml
+# Supports both development and production modes
+#
+# Usage:
+#   Development: docker-compose up (default, uses entrypoint-dev.sh)
+#   Production:  ENTRYPOINT_SCRIPT=/src/entrypoint-prod.sh docker-compose up
+#   Or set ENTRYPOINT_SCRIPT in .env file
+#
+# Default: development mode (entrypoint-dev.sh)
+
+services:
+  db:
+    image: postgres:15-alpine
+    volumes:
+      - ./pg_data:/var/lib/postgresql/data/
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-postgres}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    ports:
+      - '${POSTGRES_PORT:-5432}:5432'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-postgres}']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    env_file:
+      - .env
+    restart: ${RESTART_POLICY:-unless-stopped}
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - '${REDIS_PORT:-6379}:6379'
+    volumes:
+      - redis_data:/data
+    restart: ${RESTART_POLICY:-unless-stopped}
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  web:
+    build:
+      context: .
+      dockerfile: ./src/Dockerfile
+    # Use entrypoint directly for better hot reload support
+    entrypoint: /bin/sh -c "chmod +x /src/entrypoint-dev.sh /src/entrypoint-prod.sh && ${ENTRYPOINT_SCRIPT:-/src/entrypoint-dev.sh}"
+    volumes:
+      # Development: mount source code for hot reload
+      # Production: can be removed or made read-only
+      - ./src:/src
+      - ./requirements.txt:/requirements.txt
+      # Static files volume (for admin panel CSS/JS)
+      - ./static_files:/src/static_files
+    ports:
+      - '${WEB_PORT:-8000}:8000'
+    environment:
+      PYTHONUNBUFFERED: 1
+      DATABASE_URL: ${DATABASE_URL:-postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-postgres}}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-postgres}
+      REDIS_HOST: ${REDIS_HOST:-redis}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      ENVIRONMENT: ${ENVIRONMENT:-dev}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file:
+      - .env
+    restart: ${RESTART_POLICY:-unless-stopped}
+    # Development: enable stdin and tty for interactive debugging
+    stdin_open: ${STDIN_OPEN:-true}
+    tty: ${TTY:-true}
+
+volumes:
+  pg_data:
+  redis_data:

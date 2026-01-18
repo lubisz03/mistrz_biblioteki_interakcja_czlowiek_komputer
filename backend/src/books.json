@@ -1,0 +1,578 @@
+[
+  {
+    "kategoria": "Automatyka",
+    "tytul": "Robotyzacja i automatyzacja : Przemysł 4.0",
+    "isbn": "9788301225957",
+    "autor": "Kaczmarek, Wojciech (mechanika). Autor",
+    "informacje_o_publikacji": "Warszawa : Wydawnictwo Naukowe PWN, 2023.",
+    "spis_tresci": "https://www.biblos.pk.edu.pl/ST/2023/01/100000341783/100000341783_Kaczmarek_RobotyzacjaIAutomatyzacja.pdf"
+  },
+  {
+    "kategoria": "Automatyka",
+    "tytul": "Automatyka, robotyka i przetwarzanie informacji",
+    "isbn": "9788301209278",
+    "autor": "Kulczycki, Piotr (1958- ). Redaktor",
+    "informacje_o_publikacji": "Warszawa : Wydawnictwo Naukowe PWN, © 2020.",
+    "spis_tresci": "https://www.biblos.pk.edu.pl/ST/2020/09/100000327541/100000327541_Kulczycki_AutomatykaRobotyka.pdf"
+  },
+  {
+    "kategoria": "Automatyka",
+    "tytul": "Automatyka, robotyka i przetwarzanie informacji",
+    "isbn": "9788301209285",
+    "autor": "Kulczycki, Piotr (1958- ). Redaktor",
+    "informacje_o_publikacji": "Warszawa : Wydawnictwo Naukowe PWN, 2020.",
+    "spis_tresci": "https://www.biblos.pk.edu.pl/ST/2024/10/100000348042/100000348042_Kulczycki_AutomatykaRobotyka.pdf"
+  },
+  {
+    "kategoria": "Chemia",
+    "tytul": "Chemia fizyczna",
+    "isbn": "9788301217495",
+    "autor": "Elliott, Joanne. Autor",
+    "informacje_o_publikacji": "Warszawa : Wydawnictwo Naukowe PWN, 2021.",
+    "spis_tresci": "https://www.biblos.pk.edu.pl/ST/2021/09/100000335244/100000335244_Elliott_ChemiaFizyczna.pdf"
+  },
+  {
+    "kategoria": "Chemia",
+    "tytul": "Chemia fizyczna",
+    "isbn": "9788301182984",
+    "autor": "Atkins, Peter William (1940- ).",
+    "informacje_o_publikacji": "Warszawa : Wydawnictwo Naukowe PWN, 2016.",
+    "spis_tresci": "http://www.nukat.edu.pl/nukat/icov/GD015/xx003593440.jpg"
+  },
+  {
+    "kategoria": "Chemia",
+    "tytul": "Wykłady\n z chemii ogólnej i nieorganicznej : dla studentów biologii, \nmikrobiologii i biotechnologii (z elementami analizy jakościowej i \nilościowej)",
+    "isbn": "9788380882911",
+    "autor": "Seliger, Piotr.",
+    "informacje_o_publikacji": "Łódź : Wydawnictwo Uniwersytetu Łódzkiego, 2016.",
+    "spis_tresci": "http://www.nukat.edu.pl/nukat/icov/L30/xx003823763.jpg"
+  },
+  {
+    "kategoria": "Chemia",
+    "tytul": "Chemia ogólna : cząsteczki, materia, reakcje",
+    "isbn": "9788301138103",
+    "autor": "Jones, Loretta.",
+    "informacje_o_publikacji": "Warszawa : Wydawnictwo Naukowe PWN, 2012.",
+    "spis_tresci": "http://biblioteka1.gumed.edu.pl/okladki/13-04/xx002716830.jpg"
+  },
+  {
+    "kategoria": "Chemia",
+    "tytul": "Chemia fizyczna",
+    "isbn": "9788301135027",
+    "autor": "Atkins, Peter William (1940- ). Autor",
+    "informacje_o_publikacji": "Warszawa : Wydawnictwo Naukowe PWN, 2012.",
+    "spis_tresci": "http://www.nukat.edu.pl/nukat/icov/GD015/xx002557941.jpg"
+  },
+  {
+    "kategoria": "Chemia",
+    "tytul": "Chemia fizyczna. 3, Obliczenia fizykochemiczne",
+    "isbn": "9788301160562",
+    "autor": "Demichowicz-Pigoniowa, Jadwiga (1924-1978).",
+    "informacje_o_publikacji": "Warszawa : Wydawnictwo Naukowe PWN, 2010.",
+    "spis_tresci": "http://www.nukat.edu.pl/nukat/icov/L30/xx001572675.jpg"
+  },
+  {
+    "kategoria": "Chemia",
+    "tytul": "Chemia ogólna : cząsteczki, materia, reakcje. 1",
+    "isbn": "9788301157722",
+    "autor": "Jones, Loretta. Autor",
+    "informacje_o_publikacji": "Warszawa : Wydawnictwo Naukowe PWN, 2009.",
+    "spis_tresci": "http://www.nukat.edu.pl/nukat/icov/L30/xx001280522.jpg"
+  },
+  {
+    "kategoria": "Elektrotechnika",
+    "tytul": "Wprowadzenie do elektroniki i elektrotechniki. T. 1, Podstawy analizy obwodów elektrycznych",
+    "isbn": "9788301227852",
+    "autor": "Hambley, Allan R. Autor",
+    "informacje_o_publikacji": "Warszawa : Wydawnictwo Naukowe PWN SA, 2023.",
+    "spis_tresci": "https://www.biblos.pk.edu.pl/ST/2023/06/100000344127/100000344127_Hambley_WprowadzenieDoElektroniki.pdf"
+  },
+  {
+    "kategoria": "Elektrotechnika",
+    "tytul": "Wstęp do elektrotechniki",
+    "isbn": "9788301231651",
+    "autor": "Cieślik, Sławomir (1970- ). Autor",
+    "informacje_o_publikacji": "Warszawa : Wydawnictwo Naukowe PWN SA, 2023.",
+    "spis_tresci": "https://www.biblos.pk.edu.pl/ST/2023/11/100000345271/100000345271_Cieslik_WstepDoElektrotechniki.pdf"
+  },
+  {
+    "kategoria": "Elektrotechnika",
+    "tytul": "Wprowadzenie do elektroniki i elektrotechniki. T. 4, Elektromechanika",
+    "isbn": "9788301228682",
+    "autor": "Hambley, Allan R. Autor",
+    "informacje_o_publikacji": "Warszawa : Wydawnictwo Naukowe PWN SA, 2023.",
+    "spis_tresci": "https://www.biblos.pk.edu.pl/ST/2023/07/100000344368/100000344368_Hambley_WprowadzenieDoElektroniki.pdf"
+  },
+  {
+    "kategoria": "Elektrotechnika",
+    "tytul": "Wprowadzenie do elektroniki i elektrotechniki. T. 3, Układy i urządzenia elektroniczne",
+    "isbn": "9788301226794",
+    "autor": "Hambley, Allan R. Autor",
+    "informacje_o_publikacji": "Warszawa : Wydawnictwo Naukowe PWN SA, 2023.",
+    "spis_tresci": "https://www.biblos.pk.edu.pl/ST/2023/07/100000344370/100000344370_Hambley_WprowadzenieDoElektroniki.pdf"
+  },
+  {
+    "kategoria": "Elektrotechnika",
+    "tytul": "Elektrotechnika dla mechaników",
+    "isbn": "9788373482920",
+    "autor": "Matulewicz, Wacław.",
+    "informacje_o_publikacji": "Gdańsk : Wydawnictwo Politechniki Gdańskiej, 2010.",
+    "spis_tresci": "http://www.nukat.edu.pl/nukat/icov/GD015/xx001539541.jpg"
+  },
+  {
+    "kategoria": "Elektrotechnika",
+    "tytul": "Elektrotechnika i elektronika dla nieelektryków",
+    "isbn": "9788320435320",
+    "autor": "Hempowicz, Paweł.",
+    "informacje_o_publikacji": "Warszawa : Wydawnictwa Naukowo-Techniczne, 2009.",
+    "spis_tresci": "http://www.nukat.edu.pl/nukat/icov/L30/xx001282516.jpg"
+  },
+  {
+    "kategoria": "Fizyka",
+    "tytul": "Fizyka dla szkół wyższych. T. 1",
+    "isbn": "9788394883867",
+    "autor": "Ling, Samuel J. Autor",
+    "informacje_o_publikacji": "Warszawa : OpenStax Polska, © 2018.",
+    "spis_tresci": "https://openstax.org/details/books/fizyka-dla-szk%C3%B3%C5%82-wy%C5%BCszych-tom-1"
+  },
+  {
+    "kategoria": "Fizyka",
+    "tytul": "Fizyka dla szkół wyższych. T. 2",
+    "isbn": "9788394883843",
+    "autor": "Ling, Samuel J. Autor",
+    "informacje_o_publikacji": "Warszawa : OpenStax Polska, © 2018.",
+    "spis_tresci": "https://openstax.org/details/books/fizyka-dla-szk%C3%B3%C5%82-wy%C5%BCszych-tom-2"
+  },
+  {
+    "kategoria": "Fizyka",
+    "tytul": "Fizyka dla szkół wyższych. T. 3",
+    "isbn": "9788394883850",
+    "autor": "Ling, Samuel J. Autor",
+    "informacje_o_publikacji": "Warszawa : OpenStax Polska, © 2018.",
+    "spis_tresci": "https://openstax.org/details/books/fizyka-dla-szk%C3%B3%C5%82-wy%C5%BCszych-tom-3"
+  },
+  {
+    "kategoria": "Fizyka",
+    "tytul": "Podstawy fizyki. 3",
+    "isbn": "9788301181246",
+    "autor": "Halliday, David (1916-2010).",
+    "informacje_o_publikacji": "Warszawa : Wydawnictwo Naukowe PWN, 2016.",
+    "spis_tresci": "http://www.biblos.pk.edu.pl/ST/2016/10/100000297875/100000297875_Halliday_PodstawyFizyki.pdf"
+  },
+  {
+    "kategoria": "Fizyka",
+    "tytul": "Podstawy fizyki. 1",
+    "isbn": "9788301181147",
+    "autor": "Halliday, David (1916-2010).",
+    "informacje_o_publikacji": "Warszawa : Wydawnictwo Naukowe PWN SA, 2016.",
+    "spis_tresci": "http://www.biblos.pk.edu.pl/ST/2016/10/100000297872/100000297872_Halliday_PodstawyFizyki.pdf"
+  },
+  {
+    "kategoria": "Fizyka",
+    "tytul": "Podstawy fizyki. 2",
+    "isbn": "9788301181222",
+    "autor": "Halliday, David (1916-2010).",
+    "informacje_o_publikacji": "Warszawa : PWN, 2016.",
+    "spis_tresci": "http://www.biblos.pk.edu.pl/ST/2016/12/100000302368/100000302368_Halliday_PodstawyFizyki.pdf"
+  },
+  {
+    "kategoria": "Fizyka",
+    "tytul": "Podstawy fizyki. 4",
+    "isbn": "9788301181253",
+    "autor": "Halliday, David (1916-2010).",
+    "informacje_o_publikacji": "Warszawa : Wydawnictwo Naukowe PWN, 2016.",
+    "spis_tresci": "http://www.biblos.pk.edu.pl/ST/2016/10/100000297877/100000297877_Halliday_PodstawyFizyki.pdf"
+  },
+  {
+    "kategoria": "Fizyka",
+    "tytul": "Podstawy fizyki. 5",
+    "isbn": "9788301181536",
+    "autor": "Halliday, David (1916-2010).",
+    "informacje_o_publikacji": "Warszawa : Wydawnictwo Naukowe PWN, 2016.",
+    "spis_tresci": "http://www.biblos.pk.edu.pl/ST/2016/12/100000302342/100000302342_Halliday_PodstawyFizyki.pdf"
+  },
+  {
+    "kategoria": "Fizyka",
+    "tytul": "Podstawy fizyki. 1",
+    "isbn": "9788301181147",
+    "autor": "Halliday, David (1916-2010). Autor",
+    "informacje_o_publikacji": "Warszawa : Wydawnictwo Naukowe PWN SA, 2015.",
+    "spis_tresci": "http://www.nukat.edu.pl/nukat/icov/GD015/xx003411399.jpg"
+  },
+  {
+    "kategoria": "Fizyka",
+    "tytul": "Podstawy fizyki. 2",
+    "isbn": "9788301181222",
+    "autor": "Halliday, David (1916-2010).",
+    "informacje_o_publikacji": "Warszawa : Wydawnictwo Naukowe PWN SA, 2015.",
+    "spis_tresci": "http://www.nukat.edu.pl/nukat/icov/GD015/xx003411436.jpg"
+  },
+  {
+    "kategoria": "Fizyka",
+    "tytul": "Fizyka. T. 2",
+    "isbn": "9788379262007",
+    "autor": "Orear, Jay (1925- ).",
+    "informacje_o_publikacji": "Warszawa : Wydawnictwo WNT, 2015.",
+    "spis_tresci": "http://www.nukat.edu.pl/nukat/icov/GD015/xx003409765.jpg"
+  },
+  {
+    "kategoria": "Fizyka",
+    "tytul": "Podstawy fizyki. 3",
+    "isbn": "9788301181246",
+    "autor": "Halliday, David (1916-2010).",
+    "informacje_o_publikacji": "Warszawa : Wydawnictwo Naukowe PWN SA, 2015.",
+    "spis_tresci": "http://www.nukat.edu.pl/nukat/icov/GD015/xx003464092.jpg"
+  },
+  {
+    "kategoria": "Inzynieria Mechaniczna",
+    "tytul": "Mechanika materiałów dla studentów budownictwa",
+    "isbn": "9788301221409",
+    "autor": "Wyrwał, Jerzy (1949- ). Autor",
+    "informacje_o_publikacji": "Warszawa : Wydawnictwo Naukowe PWN SA, 2022.",
+    "spis_tresci": "https://www.biblos.pk.edu.pl/ST/2022/07/100000340169/100000340169_Wyrwal_MechanikaMaterialow.pdf"
+  },
+  {
+    "kategoria": "Inzynieria Mechaniczna",
+    "tytul": "Podstawy konstrukcji maszyn : zbiór zadań",
+    "isbn": "9788366287532",
+    "autor": "Maciejczyk, Andrzej. Redaktor",
+    "informacje_o_publikacji": "Łódź : Wydawnictwo Politechniki Łódzkiej, 2020.",
+    "spis_tresci": "https://www.biblos.pk.edu.pl/ST/2021/06/100000333880/100000333880_Maciejczyk_PodstawyKonstrukcji.pdf"
+  },
+  {
+    "kategoria": "Inzynieria Mechaniczna",
+    "tytul": "Podstawy\n konstrukcji maszyn. T. 3, Przekładnie mechaniczne : zębate walcowe o \nstałych osiach, obiegowe, stożkowe i ślimakowe, cięgnowe łańcuchowe i \npasowe, cierne",
+    "isbn": "9788301196950",
+    "autor": "Skoć, Antoni. Autor",
+    "informacje_o_publikacji": "Warszawa : Wydawnictwo Naukowe PWN, 2018.",
+    "spis_tresci": "http://www.biblos.pk.edu.pl/ST/2018/05/100000313242/100000313242_Skoc_PodstawyKonstrukcji.pdf"
+  },
+  {
+    "kategoria": "Inzynieria Mechaniczna",
+    "tytul": "Podstawy maszynoznawstwa",
+    "isbn": "9788301193362",
+    "autor": "Biały, Witold.",
+    "informacje_o_publikacji": "Warszawa : Wydawnictwo Naukowe PWN, 2017.",
+    "spis_tresci": "http://www.biblos.pk.edu.pl/ST/2017/09/100000303061/100000303061_Bialy_PodstawyMaszynoznawstwa.pdf"
+  },
+  {
+    "kategoria": "Inzynieria Mechaniczna",
+    "tytul": "Mechanizmy śrubowe : projektowanie",
+    "isbn": "9788372429797",
+    "autor": "Sanecki, Henryk. Autor",
+    "informacje_o_publikacji": "Kraków : Wydawnictwo PK, 2017.",
+    "spis_tresci": "http://www.biblos.pk.edu.pl/ST/2018/01/100000307432/100000307432_Sanecki_MechanizmySrubowe.pdf"
+  },
+  {
+    "kategoria": "Inzynieria Mechaniczna",
+    "tytul": "Podstawy konstrukcji maszyn. 2",
+    "isbn": "9788301191214",
+    "autor": "Dietrich, Marek (1934-2009). Autor Redaktor",
+    "informacje_o_publikacji": "Warszawa : Wydawnictwo Naukowe PWN, 2017.",
+    "spis_tresci": "http://www.biblos.pk.edu.pl/ST/2017/02/100000304513/100000304513_Dietrich_PodstawyKonstrukcji.pdf"
+  },
+  {
+    "kategoria": "Inzynieria Mechaniczna",
+    "tytul": "Podstawy konstrukcji maszyn. 1",
+    "isbn": "9788301191214",
+    "autor": "Kocańda, Stanisław (1922-2006). Autor",
+    "informacje_o_publikacji": "Warszawa : Wydawnictwo Naukowe PWN, 2017.",
+    "spis_tresci": "http://www.biblos.pk.edu.pl/ST/2017/02/100000304505/100000304505_Dietrich_PodstawyKonstrukcji.pdf"
+  },
+  {
+    "kategoria": "Inzynieria Mechaniczna",
+    "tytul": "Podstawy konstrukcji maszyn : elementy, podzespoły i zespoły maszyn i urządzeń",
+    "isbn": "9788301194413",
+    "autor": "Chomczyk, Włodzimierz. Autor",
+    "informacje_o_publikacji": "Warszawa : Wydawnictwo Naukowe PWN, 2017.",
+    "spis_tresci": "http://www.biblos.pk.edu.pl/ST/2017/08/100000303054/100000303054_Chomczyk_PodstawyKonstrukcjiMaszyn.pdf"
+  },
+  {
+    "kategoria": "Inzynieria Mechaniczna",
+    "tytul": "Podstawy konstrukcji maszyn. 3",
+    "isbn": "9788301191214",
+    "autor": "Dietrich, Marek (1934-2009). Redaktor",
+    "informacje_o_publikacji": "Warszawa : Wydawnictwo Naukowe PWN, 2017.",
+    "spis_tresci": "http://www.biblos.pk.edu.pl/ST/2017/02/100000304507/100000304507_Dietrich_PodstawyKonstrukcji.pdf"
+  },
+  {
+    "kategoria": "Inzynieria Mechaniczna",
+    "tytul": "Podstawy konstrukcji maszyn",
+    "isbn": "9788377752869",
+    "autor": "Magnucki, Krzysztof (1946- ).",
+    "informacje_o_publikacji": "Poznań : Wydawnictwo Politechniki Poznańskiej, 2016.",
+    "spis_tresci": "http://www.biblos.pk.edu.pl/ST/2016/10/100000295711/100000295711_Magnucki_PodstawyKonstrukcji.pdf"
+  },
+  {
+    "kategoria": "Logistyka",
+    "tytul": "Logistyka : zawiłości dziejów i nowe horyzonty",
+    "isbn": "9788320825916",
+    "autor": "Banaszyk, Piotr. Autor",
+    "informacje_o_publikacji": "Warszawa : Polskie Wydawnictwo Ekonomiczne, 2024.",
+    "spis_tresci": "https://www.biblos.pk.edu.pl/ST/2024/02/100000346237/100000346237_Banaszyk_LogistykaZawilosci.pdf"
+  },
+  {
+    "kategoria": "Logistyka",
+    "tytul": "Zrównoważona logistyka",
+    "isbn": "9788381026895",
+    "autor": "Kolasińska-Morawska, Katarzyna. Redaktor",
+    "informacje_o_publikacji": "Warszawa : CeDeWu, 2023.",
+    "spis_tresci": "https://www.biblos.pk.edu.pl/ST/2023/06/100000344043/100000344043_Kolasinska_ZrownowazonaLogistyka.pdf"
+  },
+  {
+    "kategoria": "Logistyka",
+    "tytul": "Logistyka i transport : teoria oraz praktyczne zastosowania",
+    "isbn": "9788381022866",
+    "autor": "Kuriata, Andrzej (nauki wojskowe). Autor",
+    "informacje_o_publikacji": "Warszawa : CeDeWu, 2021.",
+    "spis_tresci": "https://cedewu.pl/Logistyka-i-transport-Teoria-oraz-praktyczne-zastosowania-p2679"
+  },
+  {
+    "kategoria": "Logistyka",
+    "tytul": "Logistyka w zarządzaniu strategicznym",
+    "isbn": "9788320824650",
+    "autor": "Matwiejczuk, Rafał. Autor",
+    "informacje_o_publikacji": "Warszawa : Polskie Wydawnictwo Ekonomiczne, 2021.",
+    "spis_tresci": "https://www.biblos.pk.edu.pl/ST/2022/01/100000337217/100000337217_Matwiejczuk_LogistykaWZarzadzaniu.pdf"
+  },
+  {
+    "kategoria": "Logistyka",
+    "tytul": "Logistyka dystrybucji : trendy - wyzwania - przykłady",
+    "isbn": "9788381025164",
+    "autor": "Łapko, Aleksandra. Autor",
+    "informacje_o_publikacji": "Warszawa : CeDeWu, 2021.",
+    "spis_tresci": "https://www.biblos.pk.edu.pl/ST/2021/11/100000336130/100000336130_Lapko_LogistykaDystrybucji.pdf"
+  },
+  {
+    "kategoria": "Logistyka",
+    "tytul": "Nowoczesna koncepcja logistyki produkcji",
+    "isbn": "9788380852143",
+    "autor": "Szymonik, Andrzej. Autor",
+    "informacje_o_publikacji": "Warszawa : Difin, 2020.",
+    "spis_tresci": "https://www.biblos.pk.edu.pl/ST/2022/05/100000340004/100000340004_Szymonik_NowoczesnaKoncepcja.pdf"
+  },
+  {
+    "kategoria": "Marketing",
+    "tytul": "Idź za mną : język sekciarskiego fanatyzmu",
+    "isbn": "9788381919395",
+    "autor": "Montell, Amanda (1992- ). Autor",
+    "informacje_o_publikacji": "Wołowiec : Wydawnictwo Czarne, 2024.",
+    "spis_tresci": "http://www.nukat.edu.pl/nukat/icov/GD101/xx005778879.jpg"
+  },
+  {
+    "kategoria": "Marketing",
+    "tytul": "Opakowanie jako narzędzie oddziaływania na nabywców : zarządzanie opakowaniem w przedsiębiorstwie",
+    "isbn": "9788320824841",
+    "autor": "Ratajczyk, Monika. Autor",
+    "informacje_o_publikacji": "Warszawa : Polskie Wydawnictwo Ekonomiczne, © copyright 2021.",
+    "spis_tresci": "https://www.biblos.pk.edu.pl/ST/2022/03/100000338174/100000338174_Ratajczyk_OpakowanieJako.pdf"
+  },
+  {
+    "kategoria": "Marketing",
+    "tytul": "Inżynieria marketingowa",
+    "isbn": "9788381025201",
+    "autor": "Dworak, Janusz. Autor",
+    "informacje_o_publikacji": "Warszawa : CeDeWu, 2021.",
+    "spis_tresci": "http://www.nukat.edu.pl/nukat/icov/GD015/xx005254975.jpg"
+  },
+  {
+    "kategoria": "Marketing",
+    "tytul": "Content marketing : od strategii do efektów",
+    "isbn": "9788328368514",
+    "autor": "Bakalarska, Justyna. Autor",
+    "informacje_o_publikacji": "Gliwice : Helion, copyright © 2020.",
+    "spis_tresci": "http://www.nukat.edu.pl/nukat/icov/GD015/xx004987172.jpg"
+  },
+  {
+    "kategoria": "Marketing",
+    "tytul": "Makromarketing : nauka o marketingu wobec problemów społecznych i środowiskowych",
+    "isbn": "9788320823530",
+    "autor": "Kamiński, Jacek (ekonomia). Autor",
+    "informacje_o_publikacji": "Warszawa : Polskie Wydawnictwo Ekonomiczne, © copyright 2019.",
+    "spis_tresci": "http://www.biblos.pk.edu.pl/ST/2019/11/100000322237/100000322237_Kaminski_Makromarketing.pdf"
+  },
+  {
+    "kategoria": "Marketing",
+    "tytul": "Współczesne problemy zarządzania i marketingu",
+    "isbn": "9788379307685",
+    "autor": "Gospodarek, Tadeusz. Autor",
+    "informacje_o_publikacji": "Warszawa : Difin, 2016.",
+    "spis_tresci": "http://www.nukat.edu.pl/nukat/icov/GD015/xx003589785.jpg"
+  },
+  {
+    "kategoria": "Matematyka",
+    "tytul": "Matematyka dla studentów ekonomii, finansów i zarządzania",
+    "isbn": "9788380859913",
+    "autor": "Batóg, Barbara (ekonomia). Autor",
+    "informacje_o_publikacji": "Warszawa : Difin, 2020.",
+    "spis_tresci": "http://www.nukat.edu.pl/nukat/icov/GD015/xx004785832.jpg"
+  },
+  {
+    "kategoria": "Matematyka",
+    "tytul": "Wstęp do matematyki : zbiór zadań",
+    "isbn": "9788301145446",
+    "autor": "Guzicki, Wojciech.",
+    "informacje_o_publikacji": "Warszawa : Wydawnictwo Naukowe PWN, 2015.",
+    "spis_tresci": "http://www.nukat.edu.pl/nukat/icov/GD015/xx003529204.jpg"
+  },
+  {
+    "kategoria": "Matematyka",
+    "tytul": "Matematyka : 30 wykładów z ćwiczeniami",
+    "isbn": "9788378143086",
+    "autor": "Nawrocki, Jan (matematyka).",
+    "informacje_o_publikacji": "Warszawa : Oficyna Wydawnicza Politechniki Warszawskiej, 2014.",
+    "spis_tresci": "http://www.nukat.edu.pl/nukat/icov/WA72/xx003231541.jpg"
+  },
+  {
+    "kategoria": "Matematyka",
+    "tytul": "Wybrane zagadnienia z matematyki stosowanej",
+    "isbn": "9788372077240",
+    "autor": "Kaczyński, Andrzej M.",
+    "informacje_o_publikacji": "Warszawa : Oficyna Wydawnicza Politechniki Warszawskiej, 2014.",
+    "spis_tresci": "http://www.nukat.edu.pl/nukat/icov/WA72/xx003165545.jpg"
+  },
+  {
+    "kategoria": "Matematyka",
+    "tytul": "Matematyka : dla studentów i kandydatów na wyższe uczelnie : repetytorium",
+    "isbn": "9788301167233",
+    "autor": "Kowalczyk, Robert (matematyka).",
+    "informacje_o_publikacji": "Warszawa : Wydawnictwo Naukowe PWN, 2013.",
+    "spis_tresci": "https://www.biblos.pk.edu.pl/ST/2024/04/100000346969/100000346969_Kowalczyk_Matematyka.pdf"
+  },
+  {
+    "kategoria": "Matematyka",
+    "tytul": "Matematyka dla kierunków ekonomicznych : przykłady i zadania wraz z repetytorium ze szkoły średniej",
+    "isbn": "9788326438530",
+    "autor": "Gurgul, Henryk (1953- ).",
+    "informacje_o_publikacji": "Warszawa : Wolters Kluwer Polska, 2012.",
+    "spis_tresci": "http://www.nukat.edu.pl/nukat/icov/WALAZ/xx002450272.jpg"
+  },
+  {
+    "kategoria": "Zarzadzanie",
+    "tytul": "Ekonomiczne podstawy zarządzania",
+    "isbn": "9788381563260",
+    "autor": "Jasiński, Leszek Jerzy (1952- ). Autor",
+    "informacje_o_publikacji": "Warszawa : Oficyna Wydawnicza Politechniki Warszawskiej, 2022.",
+    "spis_tresci": "https://www.biblos.pk.edu.pl/ST/2022/03/100000338339/100000338339_Jasinski_EkonomicznePodstawy.pdf"
+  },
+  {
+    "kategoria": "Zarzadzanie",
+    "tytul": "Zarządzanie projektami dla bystrzaków",
+    "isbn": "9788328393011",
+    "autor": "Portny, Stanley E. Autor",
+    "informacje_o_publikacji": "Gliwice : Wydawnictwo Helion. Septem, 2022.",
+    "spis_tresci": "https://www.biblos.pk.edu.pl/ST/2022/05/100000339819/100000339819_Portny_ZarzadzanieProjektami.pdf"
+  },
+  {
+    "kategoria": "Zarzadzanie",
+    "tytul": "Kompetencje organizacyjne w otwartej gospodarce cyfrowej",
+    "isbn": "9788381024587",
+    "autor": "Kozarkiewicz-Chlebowska, Alina. Autor",
+    "informacje_o_publikacji": "Warszawa : CeDeWu, 2021.",
+    "spis_tresci": "http://www.nukat.edu.pl/nukat/icov/GD015/xx005169049.jpg"
+  },
+  {
+    "kategoria": "Zarzadzanie",
+    "tytul": "Zarządzanie\n portfelem projektów w przedsiębiorstwach przemysłowych : teoria i \npraktyka zarządzania projektami - analiza przypadku dla produkcji \njednostkowej",
+    "isbn": "9788366741195",
+    "autor": "Niziołek, Konrad. Autor",
+    "informacje_o_publikacji": "Łódź : Wydawnictwo Politechniki Łódzkiej, 2021.",
+    "spis_tresci": "https://www.biblos.pk.edu.pl/ST/2022/03/100000338187/100000338187_Niziolek_ZarzadzaniePortfelem.pdf"
+  },
+  {
+    "kategoria": "Zarzadzanie",
+    "tytul": "Biała księga zarządzania",
+    "isbn": "9788380857353",
+    "autor": "Gospodarek, Tadeusz. Autor",
+    "informacje_o_publikacji": "Warszawa : Difin, 2018.",
+    "spis_tresci": "http://www.biblos.pk.edu.pl/ST/2019/01/100000317351/100000317351_Gospodarek_BialaKsiega.pdf"
+  },
+  {
+    "kategoria": "Zarzadzanie",
+    "tytul": "Podstawy kształtowania efektywności przedsiębiorstw",
+    "isbn": "9788380856035",
+    "autor": "Łobos, Krzysztof. Redaktor",
+    "informacje_o_publikacji": "Warszawa : Difin, 2018.",
+    "spis_tresci": "http://www.biblos.pk.edu.pl/ST/2018/06/100000313321/100000313321_Lobos_PodstawyKsztaltowania.pdf"
+  },
+  {
+    "kategoria": "Zarzadzanie",
+    "tytul": "Współczesne problemy zarządzania i marketingu",
+    "isbn": "9788379307685",
+    "autor": "Gospodarek, Tadeusz. Autor",
+    "informacje_o_publikacji": "Warszawa : Difin, 2016.",
+    "spis_tresci": "http://www.nukat.edu.pl/nukat/icov/GD015/xx003589785.jpg"
+  },
+  {
+    "kategoria": "C++",
+    "tytul": "Internet\n rzeczy : podstawy programowania aplikacji i serwerów sieciowych w \njęzykach C/C++, MicroPython i Lua na urządzeniach IoT ESP8266, ESP32 i \nArduino",
+    "isbn": "9788328396746",
+    "autor": "Duka, Mariusz. Autor",
+    "informacje_o_publikacji": "Gliwice : Helion, 2023.",
+    "spis_tresci": "https://www.biblos.pk.edu.pl/ST/2023/07/100000344174/100000344174_Duka_InternetRzeczy.pdf"
+  },
+  {
+    "kategoria": "C++",
+    "tytul": "C++20 : laboratorium",
+    "isbn": "9788328388383",
+    "autor": "Farbaniec, Dawid. Autor",
+    "informacje_o_publikacji": "Gliwice : Helion SA, copyright 2022.",
+    "spis_tresci": "https://www.biblos.pk.edu.pl/ST/2022/04/100000339025/100000339025_Farbaniec_C20Laboratorium.pdf"
+  },
+  {
+    "kategoria": "C++",
+    "tytul": "Stosowanie wzorców projektowych w C++ : kod wielokrotnego wykorzystania w projektowaniu zorientowanym obiektowo",
+    "isbn": "9788328371750",
+    "autor": "Nesteruk, Dmitri. Autor",
+    "informacje_o_publikacji": "Gliwice : Helion, copyright © 2021.",
+    "spis_tresci": "https://www.biblos.pk.edu.pl/ST/2021/04/100000331446/100000331446_Nesteruk_StosowanieWzorcow.pdf"
+  },
+  {
+    "kategoria": "C++",
+    "tytul": "C++20 biblioteka techniczna : problemy i rozwiązania",
+    "isbn": "9788375414349",
+    "autor": "Browning, J. Burton. Autor",
+    "informacje_o_publikacji": "Warszawa : APN Promise, 2020.",
+    "spis_tresci": "https://www.biblos.pk.edu.pl/ST/2021/03/100000328523/100000328523_Browning_C20Biblioteka.pdf"
+  },
+  {
+    "kategoria": "C++",
+    "tytul": "C++ : struktury danych i algorytmy",
+    "isbn": "9788328351851",
+    "autor": "Anggoro, Wisnu. Autor",
+    "informacje_o_publikacji": "Gliwice : Helion, © 2019.",
+    "spis_tresci": "http://www.nukat.edu.pl/nukat/icov/GD015/xx004599687.jpg"
+  },
+  {
+    "kategoria": "C++",
+    "tytul": "Programowanie funkcyjne w języku C++ : tworzenie lepszych aplikacji",
+    "isbn": "9788328347038",
+    "autor": "Čukić, Ivan. Autor",
+    "informacje_o_publikacji": "Gliwice : Helion SA, copyright © 2019.",
+    "spis_tresci": "http://www.biblos.pk.edu.pl/ST/2019/11/100000322195/100000322195_Cukic_ProgramowanieFunkcyjne.pdf"
+  },
+  {
+    "kategoria": "C++",
+    "tytul": "C++17 STL : receptury",
+    "isbn": "9788328345010",
+    "autor": "Galowicz, Jacek. Autor",
+    "informacje_o_publikacji": "Gliwice : Wydawnictwo Helion, copyright © 2018.",
+    "spis_tresci": "http://www.biblos.pk.edu.pl/ST/2018/10/100000317490/100000317490_Galowicz_C17Stl.pdf"
+  },
+  {
+    "kategoria": "C++",
+    "tytul": "Czysty kod w C++17 : oprogramowanie łatwe w utrzymaniu",
+    "isbn": "9788328343405",
+    "autor": "Roth, Stephan (oprogramowanie). Autor",
+    "informacje_o_publikacji": "Gliwice : Wydawnictwo Helion, copyright 2018.",
+    "spis_tresci": "http://www.biblos.pk.edu.pl/ST/2018/09/100000318223/100000318223_Roth_CzystyKod.pdf"
+  },
+  {
+    "kategoria": "C++",
+    "tytul": "C++ w 24 godziny",
+    "isbn": "9788328335516",
+    "autor": "Cadenhead, Rogers.",
+    "informacje_o_publikacji": "Gliwice : Wydawnictwo Helion, cop. 2017.",
+    "spis_tresci": "http://www.biblos.pk.edu.pl/ST/2017/10/100000303385/100000303385_Cadenhead_CW24Godziny.pdf"
+  }
+]
