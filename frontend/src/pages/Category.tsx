@@ -3,12 +3,16 @@ import { useQuery } from '@tanstack/react-query';
 import Layout from '../components/layout/Layout';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
+import SkeletonLoader from '../components/ui/SkeletonLoader';
 import api from '../services/api';
+import { useToastStore } from '../store/toastStore';
+import { logger } from '../utils/logger';
 import type { Book, Subject } from '../types/api';
 
 export default function Category() {
   const { subjectId } = useParams<{ subjectId: string }>();
   const navigate = useNavigate();
+  const { showToast } = useToastStore();
 
   const { data: books, isLoading: booksLoading } = useQuery<Book[]>({
     queryKey: ['books', subjectId],
@@ -36,23 +40,23 @@ export default function Category() {
         subject_id: parseInt(subjectId || '0'),
       });
       // Interceptor już rozpakował response.data.data -> response.data
-      console.log('Full response:', response);
-      console.log('Response data:', response.data);
+      logger.debug('Full response:', response);
+      logger.debug('Response data:', response.data);
       const matchId = response.data?.id;
-      console.log('Match ID:', matchId);
+      logger.debug('Match ID:', matchId);
       if (matchId) {
         const path = `/matchmaking/${matchId}`;
-        console.log('Navigating to:', path);
+        logger.debug('Navigating to:', path);
         navigate(path, { replace: false });
       } else {
-        console.error('No match ID in response:', response.data);
-        alert('Błąd: Nie udało się utworzyć meczu. Sprawdź konsolę.');
+        logger.error('No match ID in response:', response.data);
+        showToast('error', 'Nie udało się utworzyć meczu. Spróbuj ponownie.');
       }
     } catch (error: unknown) {
-      console.error('Error finding opponent:', error);
+      logger.error('Error finding opponent:', error);
       const apiError = error as { response?: { data?: { message?: string } }; message?: string };
       const errorMessage = apiError.response?.data?.message || apiError.message || 'Nie udało się znaleźć przeciwnika';
-      alert(`Błąd: ${errorMessage}`);
+      showToast('error', errorMessage);
     }
   };
 
@@ -64,31 +68,37 @@ export default function Category() {
         invite_index: index,
       });
       // Interceptor już rozpakował response.data.data -> response.data
-      console.log('Full response (invite):', response);
-      console.log('Response data (invite):', response.data);
+      logger.debug('Full response (invite):', response);
+      logger.debug('Response data (invite):', response.data);
       const matchId = response.data?.id;
-      console.log('Match ID (invite):', matchId);
+      logger.debug('Match ID (invite):', matchId);
       if (matchId) {
         const path = `/matchmaking/${matchId}`;
-        console.log('Navigating to (invite):', path);
+        logger.debug('Navigating to (invite):', path);
         navigate(path, { replace: false });
       } else {
-        console.error('No match ID in response:', response.data);
-        alert('Błąd: Nie udało się utworzyć meczu. Sprawdź konsolę.');
+        logger.error('No match ID in response:', response.data);
+        showToast('error', 'Nie udało się utworzyć meczu. Spróbuj ponownie.');
       }
     } catch (error: unknown) {
-      console.error('Error inviting friend:', error);
+      logger.error('Error inviting friend:', error);
       const apiError = error as { response?: { data?: { message?: string } }; message?: string };
       const errorMessage = apiError.response?.data?.message || apiError.message || 'Nie udało się zaprosić znajomego';
-      alert(`Błąd: ${errorMessage}`);
+      showToast('error', errorMessage);
     }
   };
 
   if (booksLoading) {
     return (
       <Layout>
-        <div className="text-center py-12">
-          <div className="text-lg text-gray-600">Ładowanie książek...</div>
+        <div className="mb-8">
+          <SkeletonLoader variant="text" width="300px" height="48px" className="mb-2" />
+          <SkeletonLoader variant="text" width="400px" height="24px" />
+        </div>
+        <div className="space-y-4">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <SkeletonLoader key={i} variant="rectangular" height="120px" />
+          ))}
         </div>
       </Layout>
     );

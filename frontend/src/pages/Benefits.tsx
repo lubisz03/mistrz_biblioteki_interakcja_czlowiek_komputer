@@ -3,6 +3,7 @@ import Layout from '../components/layout/Layout';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import ProgressBar from '../components/ui/ProgressBar';
+import SkeletonLoader from '../components/ui/SkeletonLoader';
 import api from '../services/api';
 import type { Benefit } from '../types/api';
 
@@ -35,8 +36,13 @@ export default function Benefits() {
   if (isLoading) {
     return (
       <Layout>
-        <div className="text-center py-12">
-          <div className="text-lg text-gray-600">Ładowanie korzyści...</div>
+        <div className="mb-8">
+          <SkeletonLoader variant="text" width="250px" height="48px" />
+        </div>
+        <div className="space-y-4">
+          {Array.from({ length: 2 }).map((_, i) => (
+            <SkeletonLoader key={i} variant="rectangular" height="200px" />
+          ))}
         </div>
       </Layout>
     );

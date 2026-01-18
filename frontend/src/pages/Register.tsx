@@ -1,16 +1,11 @@
-import { useState, FormEvent } from 'react';
+import { useState } from 'react';
+import type { FormEvent } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import api from '../services/api';
 import { useAuthStore } from '../store/authStore';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
-
-interface LocationState {
-  from?: {
-    pathname: string;
-  };
-}
 
 export default function Register() {
   const navigate = useNavigate();

@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/layout/Layout';
 import Card from '../components/ui/Card';
+import SkeletonLoader from '../components/ui/SkeletonLoader';
 import { useAuthStore } from '../store/authStore';
 import api from '../services/api';
 import type { UserRanking } from '../types/api';
@@ -31,8 +32,20 @@ export default function Profile() {
   if (!user) {
     return (
       <Layout>
-        <div className="text-center py-12">
-          <div className="text-lg text-gray-600">Ładowanie profilu...</div>
+        <div className="mb-8">
+          <div className="flex items-center gap-6 mb-6">
+            <SkeletonLoader variant="circular" width={96} height={96} />
+            <div className="space-y-2">
+              <SkeletonLoader variant="text" width="200px" height="48px" />
+              <SkeletonLoader variant="text" width="250px" height="24px" />
+            </div>
+          </div>
+          <SkeletonLoader variant="text" width="250px" height="32px" className="mb-4" />
+          <div className="space-y-3">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <SkeletonLoader key={i} variant="rectangular" height="80px" />
+            ))}
+          </div>
         </div>
       </Layout>
     );
@@ -74,7 +87,6 @@ export default function Profile() {
                     {ranking.points} punktów • {ranking.wins} wygranych
                   </p>
                 </div>
-                <div className="text-primary font-bold">#{ranking.points > 0 ? 'Pozycja' : '-'}</div>
               </div>
             </Card>
           ))}

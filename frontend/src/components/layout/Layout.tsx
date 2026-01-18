@@ -1,16 +1,19 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from './Header';
 import Footer from './Footer';
 import ActiveUsersSidebar from './ActiveUsersSidebar';
 import MatchNotification from '../notifications/MatchNotification';
 import ChallengeModal from '../modals/ChallengeModal';
+import ToastContainer from '../ui/ToastContainer';
+import ConnectionStatus from '../ui/ConnectionStatus';
+import PageTransition from '../transitions/PageTransition';
 import { useNotificationStore } from '../../store/notificationStore';
 import { useAuthStore } from '../../store/authStore';
 import {
   connectNotificationSocket,
   getNotificationSocket,
-  disconnectNotificationSocket,
 } from '../../services/notificationSocket';
 import type { User } from '../../types/api';
 import api from '../../services/api';
@@ -32,10 +35,13 @@ export default function Layout({ children }: LayoutProps) {
     removeNotification,
   } = useNotificationStore();
   const [challengeOpponent, setChallengeOpponent] = useState<User | null>(null);
+  const cleanupRef = useRef<(() => void) | null>(null);
 
   // Połącz z WebSocket powiadomień
   useEffect(() => {
     if (!user) return;
+
+    let isMounted = true;
 
     const connectNotifications = async () => {
       try {
@@ -48,20 +54,49 @@ export default function Layout({ children }: LayoutProps) {
           return;
         }
 
-        const socket = connectNotificationSocket(token);
+        // Sprawdź czy socket już istnieje i jest połączony
+        let socket = getNotificationSocket();
+        if (socket && socket.isConnected()) {
+          console.log('Layout: Socket already exists and is connected, reusing it');
+          // Usuń stare listenery przed dodaniem nowych (jeśli istnieją)
+          // To zapobiega duplikatom listenerów
+        } else {
+          console.log('Layout: Creating new socket connection');
+          socket = connectNotificationSocket(token);
+        }
 
-        // Obsługa aktywnych użytkowników
-        socket.on('active_users', (data: { users: User[] }) => {
-          setActiveUsers(data.users || []);
-        });
+        // Zdefiniuj callbacki (muszą być funkcjami, żeby móc je usunąć później)
+        const activeUsersHandler = (data: { type: string; users?: User[] }) => {
+          console.log('Layout: Received active_users:', data);
+          if (isMounted) {
+            setActiveUsers(data.users || []);
+          }
+        };
 
-        socket.on('user:joined', (data: { user: User }) => {
-          addActiveUser(data.user);
-        });
+        const userJoinedHandler = (data: { type: string; user?: User }) => {
+          console.log('Layout: User joined:', data);
+          if (isMounted && data.user) {
+            addActiveUser(data.user);
+          }
+        };
 
-        socket.on('user:left', (data: { user_id: number }) => {
-          removeActiveUser(data.user_id);
-        });
+        const userLeftHandler = (data: { type: string; user_id?: number }) => {
+          console.log('Layout: User left:', data);
+          if (isMounted && data.user_id) {
+            removeActiveUser(data.user_id);
+          }
+        };
+
+        // Usuń stare listenery (jeśli istnieją) przed dodaniem nowych
+        // To zapobiega duplikatom
+        socket.off('active_users', activeUsersHandler);
+        socket.off('user:joined', userJoinedHandler);
+        socket.off('user:left', userLeftHandler);
+
+        // Zarejestruj nowe listenery
+        socket.on('active_users', activeUsersHandler);
+        socket.on('user:joined', userJoinedHandler);
+        socket.on('user:left', userLeftHandler);
 
         // Obsługa powiadomień o meczach
         socket.on(
@@ -131,9 +166,26 @@ export default function Layout({ children }: LayoutProps) {
           removeNotification(data.match_id);
         });
 
-        socket.connect().catch((error) => {
-          console.error('Notification socket connection error:', error);
-        });
+        // Połącz jeśli nie jest już połączony
+        if (!socket.isConnected()) {
+          socket.connect().then(() => {
+            console.log('Layout: Notification socket connected, listeners registered');
+          }).catch((error) => {
+            console.error('Layout: Notification socket connection error:', error);
+          });
+        } else {
+          console.log('Layout: Socket already connected, listeners registered');
+        }
+
+        // Zapisz cleanup funkcję
+        cleanupRef.current = () => {
+          isMounted = false;
+          if (socket) {
+            socket.off('active_users', activeUsersHandler);
+            socket.off('user:joined', userJoinedHandler);
+            socket.off('user:left', userLeftHandler);
+          }
+        };
       } catch (error) {
         console.error('Error connecting notification socket:', error);
       }
@@ -142,9 +194,13 @@ export default function Layout({ children }: LayoutProps) {
     connectNotifications();
 
     return () => {
-      disconnectNotificationSocket();
+      isMounted = false;
+      if (cleanupRef.current) {
+        cleanupRef.current();
+        cleanupRef.current = null;
+      }
     };
-  }, [user, setActiveUsers, addActiveUser, removeActiveUser, addNotification, removeNotification, navigate]);
+  }, [user?.id]); // Tylko user.id jako zależność - funkcje ze store są stabilne
 
   const handleChallenge = (userId: number) => {
     const opponentUser = activeUsers.find((u) => u.id === userId);
@@ -186,7 +242,9 @@ export default function Layout({ children }: LayoutProps) {
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
       <Header />
-      <main className="flex-1 container mx-auto px-6 py-8">{children}</main>
+      <main className="flex-1 container mx-auto px-6 py-8" role="main">
+        <PageTransition>{children}</PageTransition>
+      </main>
       <Footer />
 
       {/* Active Users Sidebar */}
@@ -209,6 +267,12 @@ export default function Layout({ children }: LayoutProps) {
 
       {/* Challenge Modal */}
       {challengeOpponent && <ChallengeModal opponent={challengeOpponent} onClose={() => setChallengeOpponent(null)} />}
+
+      {/* Toast Notifications */}
+      <ToastContainer />
+
+      {/* Connection Status */}
+      <ConnectionStatus />
     </div>
   );
 }

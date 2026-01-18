@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import Layout from '../components/layout/Layout';
 import Card from '../components/ui/Card';
+import SkeletonLoader from '../components/ui/SkeletonLoader';
 import api from '../services/api';
 import { useAuthStore } from '../store/authStore';
 import type { RankingEntry } from '../types/api';
@@ -24,8 +25,14 @@ export default function Ranking() {
   if (isLoading) {
     return (
       <Layout>
-        <div className="text-center py-12">
-          <div className="text-lg text-gray-600">Ładowanie rankingu...</div>
+        <div className="mb-8">
+          <SkeletonLoader variant="text" width="200px" height="48px" className="mb-2" />
+          <SkeletonLoader variant="text" width="300px" height="24px" />
+        </div>
+        <div className="space-y-3">
+          {Array.from({ length: 10 }).map((_, i) => (
+            <SkeletonLoader key={i} variant="rectangular" height="80px" />
+          ))}
         </div>
       </Layout>
     );

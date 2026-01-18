@@ -1,3 +1,5 @@
+import { useConnectionStore } from '../store/connectionStore';
+
 const WS_URL = import.meta.env.VITE_WS_URL || 'ws://localhost:8000';
 
 export interface WebSocketMessage {
@@ -7,8 +9,8 @@ export interface WebSocketMessage {
 }
 
 export class MatchWebSocket {
-  private ws: WebSocket | null = null;
-  private matchId: number;
+  public ws: WebSocket | null = null;
+  public matchId: number;
   private token: string;
   private listeners: Map<string, Set<(data: any) => void>> = new Map();
   private reconnectAttempts = 0;
@@ -21,6 +23,9 @@ export class MatchWebSocket {
 
   connect(): Promise<void> {
     return new Promise((resolve, reject) => {
+      const connectionStore = useConnectionStore.getState();
+      connectionStore.setMatchSocketStatus('connecting');
+
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
       const host = WS_URL.replace(/^https?:\/\//, '').replace(/^wss?:\/\//, '');
       const url = `${protocol}//${host}/ws/match/${this.matchId}/?token=${this.token}`;
@@ -29,6 +34,7 @@ export class MatchWebSocket {
 
       this.ws.onopen = () => {
         this.reconnectAttempts = 0;
+        connectionStore.setMatchSocketStatus('connected');
         resolve();
       };
 
@@ -43,15 +49,20 @@ export class MatchWebSocket {
 
       this.ws.onerror = (error) => {
         console.error('WebSocket error:', error);
+        connectionStore.setMatchSocketStatus('disconnected');
         reject(error);
       };
 
       this.ws.onclose = () => {
         this.ws = null;
+
         // Próba ponownego połączenia
         if (this.reconnectAttempts < this.maxReconnectAttempts) {
           this.reconnectAttempts++;
+          connectionStore.setMatchSocketStatus('reconnecting');
           setTimeout(() => this.connect(), 1000 * this.reconnectAttempts);
+        } else {
+          connectionStore.setMatchSocketStatus('disconnected');
         }
       };
     });
@@ -85,10 +96,12 @@ export class MatchWebSocket {
   }
 
   disconnect() {
+    const connectionStore = useConnectionStore.getState();
     if (this.ws) {
       this.ws.close();
       this.ws = null;
     }
+    connectionStore.setMatchSocketStatus('disconnected');
     this.listeners.clear();
   }
 }
@@ -96,8 +109,24 @@ export class MatchWebSocket {
 let currentSocket: MatchWebSocket | null = null;
 
 export const connectSocket = (matchId: number, token: string): MatchWebSocket => {
+  // Jeśli socket już istnieje i jest dla tego samego meczu, zwróć go
+  if (currentSocket && currentSocket.matchId === matchId) {
+    // Sprawdź czy socket jest już połączony lub w trakcie łączenia
+    if (currentSocket.ws && (currentSocket.ws.readyState === WebSocket.OPEN || currentSocket.ws.readyState === WebSocket.CONNECTING)) {
+      return currentSocket;
+    }
+  }
+
+  // Zamknij stary socket tylko jeśli istnieje i nie jest w trakcie łączenia
   if (currentSocket) {
-    currentSocket.disconnect();
+    if (currentSocket.ws && currentSocket.ws.readyState === WebSocket.CONNECTING) {
+      // Poczekaj chwilę na zamknięcie
+      currentSocket.ws.onopen = () => {
+        currentSocket?.disconnect();
+      };
+    } else {
+      currentSocket.disconnect();
+    }
   }
 
   currentSocket = new MatchWebSocket(matchId, token);
@@ -108,6 +137,9 @@ export const disconnectSocket = () => {
   if (currentSocket) {
     currentSocket.disconnect();
     currentSocket = null;
+    // Resetuj status połączenia meczu gdy socket jest rozłączany
+    const connectionStore = useConnectionStore.getState();
+    connectionStore.setMatchSocketStatus('disconnected');
   }
 };
 

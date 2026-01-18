@@ -42,6 +42,18 @@ api.interceptors.response.use(
     return response;
   },
   async (error) => {
+    // Unified error format handling
+    const apiError = {
+      status: 'error' as const,
+      message: error.response?.data?.message || error.message || 'Wystąpił nieoczekiwany błąd',
+      code: error.response?.data?.data?.code || error.response?.data?.code || 'UNKNOWN_ERROR',
+      details: error.response?.data?.data?.details || error.response?.data?.details || error.response?.data,
+      timestamp: error.response?.data?.data?.timestamp || error.response?.data?.timestamp || new Date().toISOString(),
+    };
+
+    // Attach unified error format to error object
+    (error as any).apiError = apiError;
+
     if (error.response?.status === 401) {
       // Przekieruj do logowania tylko jeśli nie jesteśmy już na stronie logowania
       if (window.location.pathname !== '/login') {

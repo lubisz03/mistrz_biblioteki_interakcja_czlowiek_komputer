@@ -51,6 +51,7 @@ export interface Match {
   created_at: string;
   started_at: string | null;
   finished_at: string | null;
+  total_questions?: number; // Liczba pytań w meczu
 }
 
 export interface UserRanking {

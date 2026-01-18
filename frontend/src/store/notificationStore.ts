@@ -27,15 +27,20 @@ export const useNotificationStore = create<NotificationState>((set) => ({
   addActiveUser: (user) =>
     set((state) => {
       if (state.activeUsers.find((u) => u.id === user.id)) {
+        console.log('NotificationStore: User already exists, skipping:', user.id);
         return state;
       }
+      console.log('NotificationStore: addActiveUser called, adding user:', user.id, 'Current count:', state.activeUsers.length);
       return { activeUsers: [...state.activeUsers, user] };
     }),
   removeActiveUser: (userId) =>
     set((state) => ({
       activeUsers: state.activeUsers.filter((u) => u.id !== userId),
     })),
-  setActiveUsers: (users) => set({ activeUsers: users }),
+  setActiveUsers: (users) => {
+    console.log('NotificationStore: setActiveUsers called with', users.length, 'users:', users);
+    set({ activeUsers: users });
+  },
   addNotification: (notification) =>
     set((state) => ({
       notifications: [...state.notifications, notification],

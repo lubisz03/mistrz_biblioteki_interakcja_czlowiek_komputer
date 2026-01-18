@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import Button from '../ui/Button';
 import Card from '../ui/Card';
 import api from '../../services/api';
+import { useToastStore } from '../../store/toastStore';
+import { logger } from '../../utils/logger';
 import type { Subject, Book } from '../../types/api';
 import type { User } from '../../types/api';
 
@@ -15,6 +17,7 @@ interface ChallengeModalProps {
 
 export default function ChallengeModal({ opponent, onClose }: ChallengeModalProps) {
   const navigate = useNavigate();
+  const { showToast } = useToastStore();
   const [selectedSubjectId, setSelectedSubjectId] = useState<number | null>(null);
   const [selectedBookId, setSelectedBookId] = useState<number | null>(null);
 
@@ -38,7 +41,7 @@ export default function ChallengeModal({ opponent, onClose }: ChallengeModalProp
 
   const handleChallenge = async () => {
     if (!selectedSubjectId || !selectedBookId) {
-      alert('Wybierz kategorię i książkę');
+      showToast('warning', 'Wybierz kategorię i książkę przed wyzwaniem');
       return;
     }
 
@@ -50,13 +53,14 @@ export default function ChallengeModal({ opponent, onClose }: ChallengeModalProp
       });
       const matchId = response.data?.id;
       if (matchId) {
+        showToast('success', 'Wyzwanie wysłane! Oczekiwanie na odpowiedź...');
         navigate(`/matchmaking/${matchId}`);
         onClose();
       }
     } catch (error: unknown) {
-      console.error('Error challenging user:', error);
+      logger.error('Error challenging user:', error);
       const apiError = error as { response?: { data?: { message?: string } }; message?: string };
-      alert(apiError.response?.data?.message || apiError.message || 'Nie udało się wyzwać gracza');
+      showToast('error', apiError.response?.data?.message || apiError.message || 'Nie udało się wyzwać gracza');
     }
   };
 

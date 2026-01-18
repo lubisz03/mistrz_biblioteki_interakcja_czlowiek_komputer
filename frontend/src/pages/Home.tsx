@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import Layout from '../components/layout/Layout';
 import Card from '../components/ui/Card';
+import SkeletonLoader from '../components/ui/SkeletonLoader';
 import api from '../services/api';
 import type { Subject } from '../types/api';
 
@@ -52,8 +53,14 @@ export default function Home() {
   if (isLoading) {
     return (
       <Layout>
-        <div className="text-center py-12">
-          <div className="text-lg text-gray-600">Ładowanie kategorii...</div>
+        <div className="mb-8">
+          <SkeletonLoader variant="text" width="200px" height="40px" className="mb-2" />
+          <SkeletonLoader variant="text" width="300px" height="24px" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <SkeletonLoader key={i} variant="rectangular" height="100px" />
+          ))}
         </div>
       </Layout>
     );

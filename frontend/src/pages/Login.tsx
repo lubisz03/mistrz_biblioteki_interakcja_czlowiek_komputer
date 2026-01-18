@@ -1,5 +1,6 @@
-import { useState, FormEvent } from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useState } from 'react';
+import type { FormEvent } from 'react';
+import { useLocation, Link } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import api from '../services/api';
 import { useAuthStore } from '../store/authStore';
@@ -13,9 +14,8 @@ interface LocationState {
 }
 
 export default function Login() {
-  const navigate = useNavigate();
   const location = useLocation();
-  const { setUser, fetchUser } = useAuthStore();
+  const { setUser } = useAuthStore();
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
@@ -29,12 +29,21 @@ export default function Login() {
       // Interceptor już rozpakował response.data.data -> response.data
       return response.data;
     },
-    onSuccess: async (data) => {
+    onSuccess: (data) => {
+      console.log('Login success, data:', data);
       // Po rozpakowaniu, user powinien być bezpośrednio w data
       if (data.user) {
+        console.log('Setting user and navigating to:', from);
         setUser(data.user);
-        await fetchUser();
-        navigate(from, { replace: true });
+        // Używamy window.location.href aby wymusić pełne przeładowanie
+        // i uniknąć konfliktów między PublicRoute a ProtectedRoute
+        // Małe opóźnienie zapewnia, że cookies są ustawione
+        setTimeout(() => {
+          window.location.href = from;
+        }, 50);
+      } else {
+        console.error('No user in response:', data);
+        setError('Błąd logowania: brak danych użytkownika');
       }
     },
     onError: (error: unknown) => {

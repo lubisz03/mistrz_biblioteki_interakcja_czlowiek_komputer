@@ -12,6 +12,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import PublicRoute from './components/auth/PublicRoute';
+import ErrorBoundary from './components/ErrorBoundary';
 import { useAuthStore } from './store/authStore';
 
 function App() {
@@ -22,8 +23,9 @@ function App() {
   }, [initialize]);
 
   return (
-    <BrowserRouter>
-      <Routes>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <Routes>
         {/* Public routes */}
         <Route
           path="/login"
@@ -126,7 +128,8 @@ function App() {
           }
         />
       </Routes>
-    </BrowserRouter>
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 }
 
