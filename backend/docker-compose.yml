@@ -65,6 +65,8 @@ services:
       REDIS_HOST: ${REDIS_HOST:-redis}
       REDIS_PORT: ${REDIS_PORT:-6379}
       ENVIRONMENT: ${ENVIRONMENT:-dev}
+      DEBUG: ${DEBUG:-true}
+      DISABLE_CSRF: ${DISABLE_CSRF:-true}
     depends_on:
       db:
         condition: service_healthy

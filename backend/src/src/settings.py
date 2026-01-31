@@ -24,11 +24,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SAMESITE = "None"
 
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = os.getenv("SECRET_KEY", "insecure-demo-secret-key")
 
-DEBUG = True if os.getenv("DEBUG") == "true" else False
+DEBUG = os.getenv("DEBUG", "true").lower() == "true"
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(",")
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -52,9 +52,12 @@ INSTALLED_APPS = [
     "ai",
 ]
 
+DISABLE_CSRF = os.getenv("DISABLE_CSRF", "true").lower() == "true"
+
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -63,6 +66,13 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+if DISABLE_CSRF:
+    MIDDLEWARE = [
+        middleware
+        for middleware in MIDDLEWARE
+        if middleware != "django.middleware.csrf.CsrfViewMiddleware"
+    ]
 
 ROOT_URLCONF = "src.urls"
 
@@ -286,7 +296,7 @@ if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
     SECURE_SSL_REDIRECT = False
 
-CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_STR = os.getenv("CORS_ALLOWED")
 CORS_ALLOW_CREDENTIALS = True
 
@@ -296,11 +306,25 @@ else:
     CORS_ALLOWED_ORIGINS = []
 
 # CSRF
-CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS
+CSRF_TRUSTED_ORIGINS_STR = os.getenv("CSRF_TRUSTED_ORIGINS")
+if CSRF_TRUSTED_ORIGINS_STR:
+    CSRF_TRUSTED_ORIGINS = CSRF_TRUSTED_ORIGINS_STR.split(",")
+else:
+    CSRF_TRUSTED_ORIGINS = [
+        "http://localhost",
+        "http://127.0.0.1",
+        "http://0.0.0.0",
+        "http://[::1]",
+        "https://localhost",
+        "https://127.0.0.1",
+        "https://0.0.0.0",
+        "https://[::1]",
+    ]
 
 # STATIC FILES
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static_files")
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Channels / WebSocket
 ASGI_APPLICATION = "src.asgi.application"
