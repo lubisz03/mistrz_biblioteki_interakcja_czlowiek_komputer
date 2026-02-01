@@ -159,6 +159,8 @@ class WebSocketTokenView(APIView):
     def get(self, request):
         """Zwróć token JWT z cookies dla WebSocket"""
         token = request.COOKIES.get(settings.SIMPLE_JWT["AUTH_COOKIE"])
+        if not token and getattr(request, "auth", None):
+            token = str(request.auth)
 
         if not token:
             return Response(

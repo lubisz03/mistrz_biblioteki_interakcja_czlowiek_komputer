@@ -263,6 +263,8 @@ class MatchConsumer(AsyncWebsocketConsumer):
         try:
             data = json.loads(text_data)
             event_type = data.get('type')
+            print(
+                f"MatchConsumer: receive() from user {self.user.id if self.user else 'unknown'}, type={event_type}")
 
             if event_type == 'match:ready':
                 await self.handle_ready()
@@ -276,21 +278,65 @@ class MatchConsumer(AsyncWebsocketConsumer):
 
     async def handle_ready(self):
         """Gracz gotowy"""
+        print(
+            f"MatchConsumer: handle_ready() called for user {self.user.id if self.user else 'unknown'}")
         if not self.match or not self.user:
+            print(f"MatchConsumer: handle_ready() - no match or user, returning")
             return
-
-        # Oznacz gotowość przez REST API
-        from django.urls import reverse
-        from django.test import RequestFactory
-        from rest_framework.test import APIRequestFactory
-        from quiz.views import MatchViewSet
 
         # Użyj bezpośredniego wywołania
         match = await database_sync_to_async(Match.objects.get)(id=self.match.id)
+        self.match = match
+        print(
+            f"MatchConsumer: handle_ready() - match {match.id} status={match.status}, player2_id={match.player2_id}")
 
         if match.status == 'waiting' and match.player2_id:
             # Generuj pytania i startuj mecz
+            print(
+                f"MatchConsumer: handle_ready() - match waiting with player2, starting match")
             await self.start_match()
+            return
+
+        if match.status == 'active':
+            print(
+                f"MatchConsumer: handle_ready() - match active, getting current question index={match.current_question_index}")
+            
+            # Sprawdź czy aktualny wynik pytania powinien być przetworzony
+            # (edge case: gracze reconnect po odpowiedziach ale przed przetworzeniem wyniku)
+            match_question = await database_sync_to_async(
+                lambda: MatchQuestion.objects.select_related('question').filter(
+                    match=match,
+                    question_order=match.current_question_index
+                ).first()
+            )()
+            
+            if match_question:
+                if (match_question.player1_answer and match_question.player2_answer and 
+                    match_question.player1_correct is None and match_question.player2_correct is None):
+                    # Obaj odpowiedzieli ale wynik nie został przetworzony
+                    print(
+                        f"MatchConsumer: handle_ready() - found unprocessed result for question {match.current_question_index}, processing")
+                    await self.process_question_result(match_question)
+                    return  # process_question_result wyśle następne pytanie lub zakończy mecz
+            
+            current_question = await self.get_next_question(match)
+            if current_question:
+                question_data = await self.get_question_data(current_question)
+                question_data['current_question_index'] = match.current_question_index
+                print(
+                    f"MatchConsumer: handle_ready() - sending match:question to user {self.user.id}")
+                await self.send(text_data=json.dumps({
+                    'type': 'match:question',
+                    'data': question_data,
+                }))
+                print(
+                    f"MatchConsumer: handle_ready() - match:question SENT to user {self.user.id}")
+            else:
+                print(
+                    f"MatchConsumer: handle_ready() - ERROR: no question found for index={match.current_question_index}")
+        else:
+            print(
+                f"MatchConsumer: handle_ready() - match status {match.status} not handled")
 
     async def handle_answer(self, answer):
         """Obsługa odpowiedzi gracza"""
@@ -348,9 +394,11 @@ class MatchConsumer(AsyncWebsocketConsumer):
 
         # Sprawdź czy obaj gracze odpowiedzieli
         if match_question.player1_answer and match_question.player2_answer:
-            # Oblicz wyniki
+            # Gracz który widzi że obaj odpowiedzieli przetwarza wynik
+            # Zabezpieczenie przed race condition jest w process_question_result (atomowy update)
             print(
                 f"MatchConsumer: Both players answered for match {self.match.id}, question {match_question.question_order}")
+            print(f"MatchConsumer: User {self.user.id} will process result")
             await self.process_question_result(match_question)
         else:
             # Powiadom przeciwnika, że odpowiedziałeś
@@ -565,11 +613,9 @@ class MatchConsumer(AsyncWebsocketConsumer):
     async def process_question_result(self, match_question):
         """Przetwarzanie wyniku pytania po odpowiedzi obu graczy"""
         print(
-            f"MatchConsumer: process_question_result called for match {self.match.id}, question_order={match_question.question_order}")
+            f"MatchConsumer: process_question_result called by user {self.user.id} for match {self.match.id}, question_order={match_question.question_order}")
 
         # Odśwież obiekt z bazy, aby mieć najnowsze dane
-        # Używamy select_related('question') aby załadować relację question w jednym zapytaniu
-        # Używamy zwykłego get() zamiast select_for_update, ponieważ nie możemy użyć transakcji w async context
         match_question = await database_sync_to_async(
             lambda: MatchQuestion.objects.select_related('question').get(
                 match=self.match,
@@ -577,64 +623,98 @@ class MatchConsumer(AsyncWebsocketConsumer):
             )
         )()
 
-        # Sprawdź czy pytanie już zostało przetworzone (zabezpieczenie przed race condition)
-        if match_question.player1_correct is not None or match_question.player2_correct is not None:
-            print(
-                f"MatchConsumer: Question {match_question.question_order} already processed, skipping")
-            return
-
-        # Sprawdź czy obaj gracze odpowiedzieli (ponownie, po odświeżeniu)
+        # Sprawdź czy obaj gracze odpowiedzieli
         if not match_question.player1_answer or not match_question.player2_answer:
             print(
                 f"MatchConsumer: Not both players answered yet. player1_answer={match_question.player1_answer}, player2_answer={match_question.player2_answer}")
             return
 
+        # Oblicz poprawność odpowiedzi
+        correct_answer = match_question.question.correct_answer
+        player1_correct = match_question.player1_answer == correct_answer
+        player2_correct = match_question.player2_answer == correct_answer
+
+        # ATOMOWE ZABEZPIECZENIE przed race condition:
+        # Użyj update() z warunkiem - tylko jeden gracz może zaktualizować
+        # Jeśli updated == 0, to znaczy że inny gracz już zaktualizował
+        updated = await database_sync_to_async(
+            lambda: MatchQuestion.objects.filter(
+                id=match_question.id,
+                player1_correct__isnull=True,
+                player2_correct__isnull=True
+            ).update(
+                player1_correct=player1_correct,
+                player2_correct=player2_correct
+            )
+        )()
+
+        if updated == 0:
+            print(
+                f"MatchConsumer: Question {match_question.question_order} already processed by another player, skipping")
+            return
+
+        print(f"MatchConsumer: User {self.user.id} successfully claimed processing for question {match_question.question_order}")
+
         # Anuluj timeout dla tego pytania
         if hasattr(self, '_question_timeout_task'):
             self._question_timeout_task.cancel()
 
-        # Oblicz poprawność odpowiedzi
-        correct_answer = match_question.question.correct_answer
+        # Odśwież match_question po update
+        match_question = await database_sync_to_async(
+            lambda: MatchQuestion.objects.select_related('question').get(id=match_question.id)
+        )()
 
-        match_question.player1_correct = (
-            match_question.player1_answer == correct_answer)
-        match_question.player2_correct = (
-            match_question.player2_answer == correct_answer)
+        # Zaktualizuj wyniki meczu atomowo
+        from django.db.models import F
+        score_updates = {}
+        if player1_correct:
+            score_updates['player1_score'] = F('player1_score') + 1
+        if player2_correct:
+            score_updates['player2_score'] = F('player2_score') + 1
 
-        # Zaktualizuj wyniki meczu
-        if match_question.player1_correct:
-            self.match.player1_score += 1
-        if match_question.player2_correct:
-            self.match.player2_score += 1
+        if score_updates:
+            await database_sync_to_async(
+                lambda: Match.objects.filter(id=self.match.id).update(**score_updates)
+            )()
 
-        await database_sync_to_async(match_question.save)()
-        await database_sync_to_async(self.match.save)()
+        # Odśwież self.match z bazy
+        self.match = await database_sync_to_async(Match.objects.get)(id=self.match.id)
         print(
             f"MatchConsumer: Scores updated - player1={self.match.player1_score}, player2={self.match.player2_score}")
 
         # Wyślij wyniki z POPRAWNĄ ODPOWIEDZIĄ (dopiero teraz!)
-        result_data = await self.get_result_data(match_question)
+        # WAŻNE: Wysyłamy SUROWE dane bez personalizacji - każdy consumer personalizuje je dla swojego użytkownika
+        serializer = MatchQuestionWithAnswerSerializer(match_question)
+        raw_result_data = serializer.data
+        raw_result_data['player1_answer'] = match_question.player1_answer
+        raw_result_data['player2_answer'] = match_question.player2_answer
+        raw_result_data['player1_correct'] = match_question.player1_correct
+        raw_result_data['player2_correct'] = match_question.player2_correct
 
         print(
             f"MatchConsumer: Sending match_result to group {self.match_group_name} for question {match_question.question_order}")
         print(
             f"MatchConsumer: Result data - player1_correct={match_question.player1_correct}, player2_correct={match_question.player2_correct}")
 
-        # Wyślij wynik do grupy (wszystkich graczy)
+        # Wyślij wynik do grupy (wszystkich graczy) - każdy consumer personalizuje dane
         await self.channel_layer.group_send(
             self.match_group_name,
             {
                 'type': 'match_result',
-                'data': result_data,
+                'raw_data': raw_result_data,
             }
         )
         print(
             f"MatchConsumer: match_result sent to group {self.match_group_name}")
 
-        # Przejdź do następnego pytania lub zakończ mecz
-        # Dodaj opóźnienie 3 sekundy, aby gracze mogli zobaczyć wynik przed następnym pytaniem
-        await asyncio.sleep(3.0)
-        await self.advance_match()
+        # WAŻNE: Uruchom opóźnione przejście do następnego pytania w osobnym task'u
+        # Nie używaj await asyncio.sleep() tutaj - to blokowałoby consumera gracza który przetwarza wynik,
+        # uniemożliwiając mu otrzymanie własnego match_result przed upływem 3 sekund!
+        async def delayed_advance():
+            await asyncio.sleep(3.0)
+            await self.advance_match()
+        
+        asyncio.create_task(delayed_advance())
 
     async def advance_match(self):
         """Przejście do następnego pytania lub zakończenie meczu"""
@@ -688,18 +768,23 @@ class MatchConsumer(AsyncWebsocketConsumer):
         self.match.finished_at = timezone.now()
 
         # Określ zwycięzcę - użyj player1_id i player2_id zamiast bezpośredniego dostępu do obiektów
-        print(f"MatchConsumer: end_match - Determining winner for match {self.match.id}")
-        print(f"MatchConsumer: Scores - player1={self.match.player1_score}, player2={self.match.player2_score}")
+        print(
+            f"MatchConsumer: end_match - Determining winner for match {self.match.id}")
+        print(
+            f"MatchConsumer: Scores - player1={self.match.player1_score}, player2={self.match.player2_score}")
         if self.match.player1_score > self.match.player2_score:
             self.match.winner_id = self.match.player1_id
-            print(f"MatchConsumer: Player1 wins (score {self.match.player1_score} vs {self.match.player2_score})")
+            print(
+                f"MatchConsumer: Player1 wins (score {self.match.player1_score} vs {self.match.player2_score})")
         elif self.match.player2_score > self.match.player1_score:
             self.match.winner_id = self.match.player2_id
-            print(f"MatchConsumer: Player2 wins (score {self.match.player2_score} vs {self.match.player1_score})")
+            print(
+                f"MatchConsumer: Player2 wins (score {self.match.player2_score} vs {self.match.player1_score})")
         else:
             # Remis - winner pozostaje None
             self.match.winner_id = None
-            print(f"MatchConsumer: Draw (score {self.match.player1_score} vs {self.match.player2_score})")
+            print(
+                f"MatchConsumer: Draw (score {self.match.player1_score} vs {self.match.player2_score})")
 
         await database_sync_to_async(self.match.save)()
         # Odśwież mecz z bazy, aby mieć pewność że winner_id jest zapisany
@@ -712,8 +797,10 @@ class MatchConsumer(AsyncWebsocketConsumer):
         # Wyślij końcowe wyniki
         final_data = await self.get_final_match_data(self.match)
 
-        print(f"MatchConsumer: Sending match:end to group {self.match_group_name} for match {self.match.id}")
-        print(f"MatchConsumer: Final data - player1_score={self.match.player1_score}, player2_score={self.match.player2_score}, winner_id={self.match.winner_id}")
+        print(
+            f"MatchConsumer: Sending match:end to group {self.match_group_name} for match {self.match.id}")
+        print(
+            f"MatchConsumer: Final data - player1_score={self.match.player1_score}, player2_score={self.match.player2_score}, winner_id={self.match.winner_id}")
 
         await self.channel_layer.group_send(
             self.match_group_name,
@@ -722,7 +809,8 @@ class MatchConsumer(AsyncWebsocketConsumer):
                 'data': final_data,
             }
         )
-        print(f"MatchConsumer: match:end sent to group {self.match_group_name}")
+        print(
+            f"MatchConsumer: match:end sent to group {self.match_group_name}")
 
     async def update_rankings(self):
         """Aktualizacja rankingów po zakończeniu meczu"""
@@ -778,10 +866,27 @@ class MatchConsumer(AsyncWebsocketConsumer):
                 f"MatchConsumer: Ignoring opponent_answered event - it's our own answer (user {self.user.id})")
 
     async def match_result(self, event):
-        """Wynik pytania (z poprawną odpowiedzią!)"""
+        """Wynik pytania (z poprawną odpowiedzią!) - personalizowany dla każdego gracza"""
+        raw_data = event.get('raw_data', event.get('data', {}))
+        
+        # Personalizuj dane dla tego użytkownika
+        personalized_data = dict(raw_data)
+        if self.user.id == self.match.player1_id:
+            personalized_data['your_answer'] = raw_data.get('player1_answer')
+            personalized_data['your_correct'] = raw_data.get('player1_correct')
+            personalized_data['opponent_answer'] = raw_data.get('player2_answer')
+            personalized_data['opponent_correct'] = raw_data.get('player2_correct')
+        else:
+            personalized_data['your_answer'] = raw_data.get('player2_answer')
+            personalized_data['your_correct'] = raw_data.get('player2_correct')
+            personalized_data['opponent_answer'] = raw_data.get('player1_answer')
+            personalized_data['opponent_correct'] = raw_data.get('player1_correct')
+        
+        print(f"MatchConsumer: match_result handler for user {self.user.id} - your_correct={personalized_data.get('your_correct')}")
+        
         await self.send(text_data=json.dumps({
             'type': 'match:result',
-            'data': event['data'],
+            'data': personalized_data,
         }))
 
     async def match_question(self, event):
@@ -837,7 +942,8 @@ class MatchConsumer(AsyncWebsocketConsumer):
 
     async def match_end(self, event):
         """Koniec meczu"""
-        print(f"MatchConsumer: match_end handler called for user {self.user.id}, match {self.match.id if hasattr(self, 'match') and self.match else 'unknown'}")
+        print(
+            f"MatchConsumer: match_end handler called for user {self.user.id}, match {self.match.id if hasattr(self, 'match') and self.match else 'unknown'}")
         await self.send(text_data=json.dumps({
             'type': 'match:end',
             'data': event['data'],
@@ -1018,7 +1124,8 @@ class MatchConsumer(AsyncWebsocketConsumer):
             'winner_id': match.winner_id if match.winner_id else None,
             'questions': results,
         }
-        print(f"MatchConsumer: get_final_match_data for user {self.user.id}, match {match.id}: player1_score={final_data['player1_score']}, player2_score={final_data['player2_score']}, winner_id={final_data['winner_id']}")
+        print(
+            f"MatchConsumer: get_final_match_data for user {self.user.id}, match {match.id}: player1_score={final_data['player1_score']}, player2_score={final_data['player2_score']}, winner_id={final_data['winner_id']}")
         return final_data
 
     @database_sync_to_async
@@ -1066,10 +1173,17 @@ class MatchConsumer(AsyncWebsocketConsumer):
                         f"MatchConsumer: User {self.user.id} - timer_sync_loop: no match_question found, breaking")
                     break
 
-                # Sprawdź czy obaj gracze odpowiedzieli - jeśli tak, nie wysyłaj timera
+                # Sprawdź czy obaj gracze odpowiedzieli
                 if match_question.player1_answer and match_question.player2_answer:
-                    print(
-                        f"MatchConsumer: User {self.user.id} - timer_sync_loop: both players answered, breaking")
+                    # Sprawdź czy wynik został już przetworzony
+                    if match_question.player1_correct is None or match_question.player2_correct is None:
+                        # Wynik nie został przetworzony - przetwórz go teraz
+                        print(
+                            f"MatchConsumer: User {self.user.id} - timer_sync_loop: both players answered but result not processed, processing now")
+                        await self.process_question_result(match_question)
+                    else:
+                        print(
+                            f"MatchConsumer: User {self.user.id} - timer_sync_loop: both players answered and result processed, breaking")
                     break
 
                 # Oblicz pozostały czas
@@ -1195,6 +1309,8 @@ class MatchConsumer(AsyncWebsocketConsumer):
                     )
 
                     # Przetwórz wynik pytania
+                    # Atomowy update w process_question_result zapobiega race condition
+                    print(f"MatchConsumer: Timeout - User {self.user.id} will process result")
                     await self.process_question_result(match_question)
             except asyncio.CancelledError:
                 pass

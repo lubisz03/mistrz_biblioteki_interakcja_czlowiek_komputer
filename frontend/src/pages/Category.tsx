@@ -1,10 +1,11 @@
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import Layout from '../components/layout/Layout';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import SkeletonLoader from '../components/ui/SkeletonLoader';
-import api from '../services/api';
+import api, { getErrorMessage, apiWithRetry } from '../services/api';
 import { useToastStore } from '../store/toastStore';
 import { logger } from '../utils/logger';
 import type { Book, Subject } from '../types/api';
@@ -13,8 +14,9 @@ export default function Category() {
   const { subjectId } = useParams<{ subjectId: string }>();
   const navigate = useNavigate();
   const { showToast } = useToastStore();
+  const [isSearching, setIsSearching] = useState<number | null>(null); // ID książki która jest aktualnie wyszukiwana
 
-  const { data: books, isLoading: booksLoading } = useQuery<Book[]>({
+  const { data: books, isLoading: booksLoading, error: booksError, refetch } = useQuery<Book[]>({
     queryKey: ['books', subjectId],
     queryFn: async () => {
       const response = await api.get(`/quiz/subjects/${subjectId}/books/`);
@@ -34,11 +36,17 @@ export default function Category() {
   });
 
   const handleFindOpponent = async (bookId: number) => {
+    if (isSearching) return; // Zapobiega wielokrotnym kliknięciom
+    
+    setIsSearching(bookId);
     try {
-      const response = await api.post('/quiz/matches/find/', {
-        book_id: bookId,
-        subject_id: parseInt(subjectId || '0'),
-      });
+      // Użyj apiWithRetry dla odporności na błędy sieciowe
+      const response = await apiWithRetry(() => 
+        api.post('/quiz/matches/find/', {
+          book_id: bookId,
+          subject_id: parseInt(subjectId || '0'),
+        })
+      );
       // Interceptor już rozpakował response.data.data -> response.data
       logger.debug('Full response:', response);
       logger.debug('Response data:', response.data);
@@ -54,19 +62,26 @@ export default function Category() {
       }
     } catch (error: unknown) {
       logger.error('Error finding opponent:', error);
-      const apiError = error as { response?: { data?: { message?: string } }; message?: string };
-      const errorMessage = apiError.response?.data?.message || apiError.message || 'Nie udało się znaleźć przeciwnika';
+      const errorMessage = getErrorMessage(error);
       showToast('error', errorMessage);
+    } finally {
+      setIsSearching(null);
     }
   };
 
   const handleInviteFriend = async (bookId: number, index: string) => {
+    if (isSearching) return; // Zapobiega wielokrotnym kliknięciom
+    
+    setIsSearching(bookId);
     try {
-      const response = await api.post('/quiz/matches/find/', {
-        book_id: bookId,
-        subject_id: parseInt(subjectId || '0'),
-        invite_index: index,
-      });
+      // Użyj apiWithRetry dla odporności na błędy sieciowe
+      const response = await apiWithRetry(() =>
+        api.post('/quiz/matches/find/', {
+          book_id: bookId,
+          subject_id: parseInt(subjectId || '0'),
+          invite_index: index,
+        })
+      );
       // Interceptor już rozpakował response.data.data -> response.data
       logger.debug('Full response (invite):', response);
       logger.debug('Response data (invite):', response.data);
@@ -82,9 +97,10 @@ export default function Category() {
       }
     } catch (error: unknown) {
       logger.error('Error inviting friend:', error);
-      const apiError = error as { response?: { data?: { message?: string } }; message?: string };
-      const errorMessage = apiError.response?.data?.message || apiError.message || 'Nie udało się zaprosić znajomego';
+      const errorMessage = getErrorMessage(error);
       showToast('error', errorMessage);
+    } finally {
+      setIsSearching(null);
     }
   };
 
@@ -100,6 +116,27 @@ export default function Category() {
             <SkeletonLoader key={i} variant="rectangular" height="120px" />
           ))}
         </div>
+      </Layout>
+    );
+  }
+
+  // Obsługa błędu ładowania książek
+  if (booksError) {
+    return (
+      <Layout>
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-primary mb-2">{subject?.name || 'Kategoria'}</h1>
+        </div>
+        <Card className="text-center py-8">
+          <div className="text-red-500 mb-4">
+            <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          <h3 className="text-xl font-semibold text-gray-800 mb-2">Nie udało się załadować książek</h3>
+          <p className="text-gray-600 mb-4">{getErrorMessage(booksError)}</p>
+          <Button onClick={() => refetch()}>Spróbuj ponownie</Button>
+        </Card>
       </Layout>
     );
   }
@@ -120,7 +157,12 @@ export default function Category() {
                 <p className="text-gray-600">{book.author}</p>
               </div>
               <div className="flex gap-4">
-                <Button onClick={() => handleFindOpponent(book.id)}>Wyszukaj przeciwnika</Button>
+                <Button 
+                  onClick={() => handleFindOpponent(book.id)}
+                  disabled={isSearching !== null}
+                >
+                  {isSearching === book.id ? 'Szukam...' : 'Wyszukaj przeciwnika'}
+                </Button>
               </div>
             </div>
             <div className="mt-4 pt-4 border-t border-gray-200">
@@ -129,7 +171,8 @@ export default function Category() {
                 <input
                   type="text"
                   placeholder="Numer indeksu"
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary disabled:bg-gray-100"
+                  disabled={isSearching !== null}
                   onKeyPress={(e) => {
                     if (e.key === 'Enter') {
                       const target = e.target as HTMLInputElement;
@@ -141,6 +184,7 @@ export default function Category() {
                 />
                 <Button
                   variant="success"
+                  disabled={isSearching !== null}
                   onClick={(e) => {
                     const input = (e.target as HTMLElement).parentElement?.querySelector('input') as HTMLInputElement;
                     if (input?.value) {
@@ -148,7 +192,7 @@ export default function Category() {
                     }
                   }}
                 >
-                  Wyzwij znajomego
+                  {isSearching === book.id ? 'Wysyłam...' : 'Wyzwij znajomego'}
                 </Button>
               </div>
             </div>

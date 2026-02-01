@@ -15,6 +15,7 @@ export class MatchWebSocket {
   private listeners: Map<string, Set<(data: any) => void>> = new Map();
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 5;
+  private shouldReconnect = true; // Flaga kontrolująca czy reconnect jest dozwolony
 
   constructor(matchId: number, token: string) {
     this.matchId = matchId;
@@ -23,6 +24,9 @@ export class MatchWebSocket {
 
   connect(): Promise<void> {
     return new Promise((resolve, reject) => {
+      // Włącz reconnect przy nowym połączeniu
+      this.shouldReconnect = true;
+      
       const connectionStore = useConnectionStore.getState();
       connectionStore.setMatchSocketStatus('connecting');
 
@@ -56,11 +60,16 @@ export class MatchWebSocket {
       this.ws.onclose = () => {
         this.ws = null;
 
-        // Próba ponownego połączenia
-        if (this.reconnectAttempts < this.maxReconnectAttempts) {
+        // Próba ponownego połączenia TYLKO jeśli nie było celowego disconnect
+        if (this.shouldReconnect && this.reconnectAttempts < this.maxReconnectAttempts) {
           this.reconnectAttempts++;
           connectionStore.setMatchSocketStatus('reconnecting');
-          setTimeout(() => this.connect(), 1000 * this.reconnectAttempts);
+          setTimeout(() => {
+            // Sprawdź ponownie przed reconnect
+            if (this.shouldReconnect) {
+              this.connect();
+            }
+          }, 1000 * this.reconnectAttempts);
         } else {
           connectionStore.setMatchSocketStatus('disconnected');
         }
@@ -96,6 +105,10 @@ export class MatchWebSocket {
   }
 
   disconnect() {
+    // Wyłącz reconnect - to jest celowe rozłączenie
+    this.shouldReconnect = false;
+    this.reconnectAttempts = this.maxReconnectAttempts; // Zapobiega dalszym próbom
+    
     const connectionStore = useConnectionStore.getState();
     if (this.ws) {
       this.ws.close();

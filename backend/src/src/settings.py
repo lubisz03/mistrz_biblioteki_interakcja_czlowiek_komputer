@@ -61,7 +61,7 @@ MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
-    "auth_api.middleware.CSRFMiddleware",
+    # "auth_api.middleware.CSRFMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -212,15 +212,16 @@ SIMPLE_JWT = {
     # Domain for the auth cookies. Set to None for the standard domain.
     "AUTH_COOKIE_DOMAIN": None,
     # Whether to use secure cookies (only transmitted over HTTPS). True for secure cookies.
-    "AUTH_COOKIE_SECURE": True,
+    "AUTH_COOKIE_SECURE": False,
     # HttpOnly flag for cookies. When set to True, the cookie cannot be accessed via JavaScript.
     "AUTH_COOKIE_HTTP_ONLY": True,
     # Path for which the cookies are valid. Default is the root of the domain.
     "AUTH_COOKIE_PATH": "/",
     # SameSite attribute for cookies. Determines how cookies are sent with cross-site requests.
-    "AUTH_COOKIE_SAMESITE": SAMESITE,
+    "AUTH_COOKIE_SAMESITE": 'Lax',
     "TOKEN_OBTAIN_SERIALIZER": "auth_api.serializers.CustomTokenObtainPairSerializer",
 }
+
 
 AUTHENTICATION_BACKENDS = [
     "auth_api.backends.UsernameOrEmailBackend",
@@ -320,6 +321,11 @@ else:
         "https://0.0.0.0",
         "https://[::1]",
     ]
+
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
+CSRF_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SAMESITE = 'Lax'
 
 # STATIC FILES
 STATIC_URL = "/static/"

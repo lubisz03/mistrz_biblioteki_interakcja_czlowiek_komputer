@@ -29,7 +29,10 @@ class CustomAuthentication(JWTAuthentication):
         except:
             return None
 
-        if raw_token == request.COOKIES.get(settings.SIMPLE_JWT["AUTH_COOKIE"]):
+        if (
+            raw_token == request.COOKIES.get(settings.SIMPLE_JWT["AUTH_COOKIE"])
+            and not settings.DISABLE_CSRF
+        ):
             enforce_csrf(request)
 
         return self.get_user(validated_token), validated_token

@@ -2,20 +2,7 @@ import api from './api';
 import type { User } from '../types/api';
 
 export const getAuthToken = (): string | null => {
-  // Token jest w cookies, więc nie trzeba go pobierać
-  // Ale jeśli potrzebujemy tokena dla WebSocket, możemy go pobrać z cookies
-  const cookies = document.cookie.split(';');
-  console.log('All cookies:', document.cookie);
-  for (let cookie of cookies) {
-    const [name, value] = cookie.trim().split('=');
-    console.log('Cookie:', name, '=', value ? '***' : 'empty');
-    if (name === 'access') {
-      console.log('Found access token cookie');
-      return value;
-    }
-  }
-  console.log('No access token cookie found');
-  return null;
+  return localStorage.getItem('access_token');
 };
 
 export const getCurrentUser = async (): Promise<User | null> => {
@@ -27,7 +14,7 @@ export const getCurrentUser = async (): Promise<User | null> => {
       return data.user;
     }
     return null;
-  } catch (error) {
+  } catch {
     return null;
   }
 };
@@ -37,5 +24,7 @@ export const logout = async (): Promise<void> => {
     await api.post('/auth/logout/');
   } catch (error) {
     console.error('Logout error:', error);
+  } finally {
+    localStorage.removeItem('access_token');
   }
 };

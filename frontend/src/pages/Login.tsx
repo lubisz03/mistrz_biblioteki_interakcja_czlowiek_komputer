@@ -34,6 +34,9 @@ export default function Login() {
       // Po rozpakowaniu, user powinien być bezpośrednio w data
       if (data.user) {
         console.log('Setting user and navigating to:', from);
+        if (data.access_token) {
+          localStorage.setItem('access_token', data.access_token);
+        }
         setUser(data.user);
         // Używamy window.location.href aby wymusić pełne przeładowanie
         // i uniknąć konfliktów między PublicRoute a ProtectedRoute
@@ -134,12 +137,6 @@ export default function Login() {
               {loginMutation.isPending ? 'Logowanie...' : 'Zaloguj się'}
             </Button>
           </form>
-
-          <div className="mt-6 text-center">
-            <a href="#" className="text-sm text-primary hover:underline">
-              Zapomniałeś hasła?
-            </a>
-          </div>
 
           <div className="mt-4 text-center text-sm text-gray-600">
             Nie masz konta?{' '}
