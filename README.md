@@ -67,15 +67,7 @@ Studenci rzadko korzystają z zasobów biblioteki uczelnianej. Brakuje motywacji
 │  ○ Wyszukanie przeciwnika / zaproszenie znajomego           │
 │  ○ Rozwiązywanie quizu 1v1                                  │
 │  ○ Przeglądanie rankingu                                    │
-└─────────────────────────────────────────────────────────────┘
-
-┌─────────────────────────────────────────────────────────────┐
-│                         ADMIN                                │
-├─────────────────────────────────────────────────────────────┤
-│  ○ Zarządzanie kategoriami (Subject)                        │
-│  ○ Zarządzanie książkami (Book)                             │
-│  ○ Podgląd meczy i wyników                                  │
-│  ○ Zarządzanie użytkownikami                                │
+│  ○ Przeglądanie profilu i statystyk                         │
 └─────────────────────────────────────────────────────────────┘
 ```
 
