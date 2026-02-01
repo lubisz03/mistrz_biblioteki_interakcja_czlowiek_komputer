@@ -99,13 +99,19 @@ Warunki wstępne: Zalogowany, wybrał książkę
 │   (React)   │                  │  (Django)   │              └──────────┘
 └─────────────┘                  └──────┬──────┘
                                         │
-                                        │ Redis (Channels)
-                                        ▼
-                                 ┌─────────────┐
-                                 │   Claude    │
-                                 │  (LangChain)│
-                                 └─────────────┘
+                         ┌──────────────┼──────────────┐
+                         │              │              │
+                         ▼              ▼              ▼
+                  ┌───────────┐  ┌───────────┐  ┌───────────┐
+                  │   Redis   │  │   Claude  │  │  Tavily   │
+                  │ (WebSocket│  │(LangChain)│  │ (Search)  │
+                  │  Channels)│  └───────────┘  └───────────┘
+                  └───────────┘
 ```
+
+- **Redis** - channel layer dla WebSocket (synchronizacja meczu między graczami)
+- **Claude** - API do generowania pytań quizowych (wywoływany przez HTTP)
+- **Tavily** - opcjonalne wyszukiwanie dodatkowych informacji o książkach
 
 ### 2.2 Stos technologiczny
 
